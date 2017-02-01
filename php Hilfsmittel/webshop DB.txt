@@ -1,0 +1,24 @@
+...rein vom Aufbau ist jedes ShopSystem fast gleich:
+eine DB-Table mit Katalogen,auf dem ein index liegt, eine table mit Warengruppen,
+die mit dem index der kataloge verknüpft ist und eine table mit artikeln, wo der index
+mit den Warengruppen verknüpft ist. (Wobei ich mit index den "Pirimary Key" meine).
+
+Das ganze lässt sich mit dieser Struktur auf jede Server-Script-Sprache anwenden, egal,
+ob nun PHP,CGI oder ASP - einzig interessant ist also zunächst die Basis-Implementierung
+in der jeweiligen Script-Sprache:
+
+Was gebracht wird sind also etliche DB-Queries zum auflisten in sämtlichen Variablen
+bzw GUI-Komponenten (z.b. comboboxen etc) sowie das anlegen verschiedener Request-
+String zwischen Server und Client(Browser), um Abfragen zu generieren.
+
+Das DB-Layout für MySQL kann z.B. so aussehen:
+Kataloge - Felder: INT(3) kid PRIMARY KEY NOT NULL AUTO_INCREMENT, VARCHAR(255) title
+(INT(3) erlaubt hier 999 Kataloge und hat den Primär-Schlüssel, VARCHAR(255) erlaubt 255 Zeichen als Bezeichnung des einzelnen Kataloges)
+
+Warengruppen - INT[3] wid PRIMARY KEY NOT NULL AUTO_INCREMENT, INT(3) kid, VARCHAR(255) title
+(wid = ID der Warengruppe, kid = Verknüpfung zum Katalog...)
+
+Artikelgruppen - INT(3) agid PRIMARY KEY NOT NULL AUTO_INCREMENT, INT(3) wid, INT(3) kid, VARCHAR(255) title
+
+Artikel - INT(10) aid, INT(3) agid, INT(3) wid, INT(3) kid, VARCHAR(255) title, TEXT html, double preis
+(aid = Artikel-ID, agid = ArtikelGruppe-ID, wid = Warengruppe-ID, kid = Katalog-ID, html = riesig grosses Textfeld zum speichern kompletten HTML-Inhaltes, double Preis: Achtung, double sollte mit str_replace() im PHP von 00.00 auf 00,00 umgebaut werden ;)
